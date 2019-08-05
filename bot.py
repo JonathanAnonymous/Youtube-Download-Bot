@@ -4,7 +4,7 @@ import telebot
 import glob 
 import os
 from time import sleep
-bot = telebot.TeleBot('897290392:AAFz99BO_5zwD-CRvRAAejqyQGWx0R56x0c')
+bot = telebot.TeleBot('897290392:AAHsSCgmj1Djm_8P2KfEss5J4N-d9t0Wj4g')
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
@@ -15,11 +15,14 @@ def responde(message):
     m = message.text.split()
     chat_id = message.chat.id
     bot.reply_to(message, 'Baixando...')
-    os.system('tmux new-session \'youtube-dl {} -o {}.mkv\''.format(m[1], chat_id))
-    bot.reply_to(message, 'Por favor, aguarde 5 segundos...')
-    sleep(5)
-    video = open('{}.mkv'.format(chat_id), 'rb')
-    bot.send_document(chat_id, video)
-    os.system('rm {}.mkv'.format(chat_id))
+    try:
+        os.system('tmux new-session \'youtube-dl {} -o {}\''.format(m[1], chat_id))
+        bot.reply_to(message, 'Por favor, aguarde 5 segundos...')
+        sleep(5)
+        video = open('{}.mkv'.format(chat_id), 'rb')
+        bot.send_video(chat_id, video)
+        os.system('rm {}.mkv'.format(chat_id))
+    except:
+        bot.reply_to(message, 'Ocorreu um erro!')
 
 bot.polling()
